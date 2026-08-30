@@ -6,17 +6,21 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "prisma db push && tsx src/index.ts",
-    "mock": "tsx src/mock-generator.ts"
+    "mock": "tsx src/mock-generator.ts",
+    "sensor": "tsx src/serial-bridge.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "@serialport/parser-readline": "^13.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "prisma": "^5.22.0"
+    "prisma": "^5.22.0",
+    "puppeteer": "^25.9.0",
+    "serialport": "^13.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
