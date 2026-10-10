@@ -27,7 +27,7 @@ function ReadingsList({ history, onRowClick }: ReadingsListProps) {
       </p>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="max-h-[280px] overflow-y-auto">
+        <div className="max-h-70 overflow-y-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50 text-gray-500 uppercase text-xs sticky top-0">
               <tr>

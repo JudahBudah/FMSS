@@ -53,17 +53,22 @@ app.get("/api/latest", async (req, res) => {
   }
 });
 
-app.get("/api/history", async (req, res) => {
+// Returns the most recent readings, oldest to newest.
+// Optional ?limit=N (default 20, clamped between 1 and 50)
+app.get('/api/history', async (req, res) => {
   try {
+    const requested = parseInt(String(req.query.limit), 10);
+    const limit = Number.isNaN(requested) ? 20 : Math.min(Math.max(requested, 1), 50);
+
     const readings = await prisma.reading.findMany({
-      orderBy: { timestamp: "desc" },
-      take: 20,
+      orderBy: { timestamp: 'desc' },
+      take: limit,
     });
 
     res.json(readings.reverse());
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch reading history" });
+    res.status(500).json({ error: 'Failed to fetch reading history' });
   }
 });
 
