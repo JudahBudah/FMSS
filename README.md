@@ -4,20 +4,14 @@ Web dashboard for the FMSS soil sensor: live readings, past readings, and PDF so
 
 **Stack:** React 19, Vite, TypeScript, Tailwind CSS v4 (frontend). Node.js, Express, Prisma 5, PostgreSQL (backend).
 
-## Pages and owners
+## Pages
 
-| Route | File | Owner |
-|---|---|---|
-| `/` | `frontend/src/pages/WelcomePage.tsx` | Ivanne |
-| `/dashboard` | `frontend/src/pages/DashboardPage.tsx` | Judah |
-| `/past-readings` | `frontend/src/pages/PastReadingsPage.tsx` | Tiu |
-| `/about` | `frontend/src/pages/AboutPage.tsx` | Tiu |
-
-Tiu also owns `components/ReadingsList.tsx` and `components/ReportModal.tsx`.
-Judah owns everything else: `Sidebar`, `layouts/`, `hooks/`, `api.ts`, `App.tsx`, `index.css`, and the backend.
-
-**Please only edit your own files.** If you need a change somewhere else (a new color in
-`index.css`, different data from a hook), ask the owner.
+| Route | File |
+|---|---|
+| `/` | `frontend/src/pages/WelcomePage.tsx` | 
+| `/dashboard` | `frontend/src/pages/DashboardPage.tsx` | 
+| `/past-readings` | `frontend/src/pages/PastReadingsPage.tsx` | 
+| `/about` | `frontend/src/pages/AboutPage.tsx` | 
 
 ## Running the project
 
@@ -31,9 +25,7 @@ npm install
 npm run dev
 ```
 
-Open the URL it prints (usually http://localhost:5173).
-
-### Backend (needed for live data, past readings, and reports)
+### Backend 
 
 1. Create the database. In `psql`, as the `postgres` user:
 
@@ -61,7 +53,7 @@ npx prisma migrate dev
 
 ```bash
 npm run dev     # API server on port 3001
-npm run mock    # adds fake sensor readings every 5 seconds
+npm run mock    # adds fake sensor readings every 3 seconds
 ```
 
 Ignore `npm run sensor`. That one is for the real hardware.
@@ -90,25 +82,9 @@ Ignore `npm run sensor`. That one is for the real hardware.
 ## Tailwind v4 notes
 
 - Colors and fonts live in `frontend/src/index.css` inside `@theme { ... }`. For example,
-  `--color-sidebar` gives you `bg-sidebar` and `text-sidebar`. Ask Judah before changing it.
+  `--color-sidebar` gives you `bg-sidebar` and `text-sidebar`. 
 - v4 shifted the small sizes: `shadow-xs` is the old `shadow-sm`, and `rounded-xs` is the old
   `rounded-sm`. Tutorials written for v3 may look slightly different.
 - Gradients are `bg-linear-to-b` (not `bg-gradient-to-b`). Opacity is `bg-black/50` (not `bg-opacity-50`).
 
-## Git workflow
-
-Branches: `feature/welcome-page` (Ivanne) and `feature/past-readings-about` (Tiu).
-
-```bash
-git clone <repo-url>
-git checkout feature/<your-branch>
-
-# each time you work
-git pull
-# ...edit your files...
-git add -A
-git commit -m "Short description of what you changed"
-git push
-```
-
-Open a pull request into `main` on GitHub. Judah reviews and merges. Never commit `.env` or `node_modules`.
+Open a pull request into `main` on GitHub. Owner reviews and merges. Never commit `.env` or `node_modules`.
