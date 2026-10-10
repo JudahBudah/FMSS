@@ -37,3 +37,14 @@ export function parseReading(raw: RawReading): Reading {
     conductivity: Number(raw.conductivity),
   };
 }
+
+export interface Recommendations {
+  moisture: { status: string; action: string };
+  ph: { evaluation: string; action: string };
+  npk: { analysis: string; action: string };
+}
+
+export interface ReportData {
+  reading: Reading;
+  recommendations: Recommendations;
+}

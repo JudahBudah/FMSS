@@ -1,3 +1,5 @@
+import type { Reading } from '../api';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,15 +13,7 @@ import { Line } from 'react-chartjs-2';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-interface Reading {
-  id: number;
-  timestamp: string;
-  moisture: number;
-  ph: number;
-  nitrogen: number;
-  phosphorus: number;
-  potassium: number;
-}
+
 
 interface HistoryChartProps {
   history: Reading[];

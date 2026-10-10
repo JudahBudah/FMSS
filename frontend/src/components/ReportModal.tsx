@@ -1,20 +1,5 @@
-interface Reading {
-  id: number;
-  timestamp: string;
-  moisture: number;
-  ph: number;
-  nitrogen: number;
-  phosphorus: number;
-  potassium: number;
-  temperature: number;
-  conductivity: number;
-}
-
-interface Recommendations {
-  moisture: { status: string; action: string };
-  ph: { evaluation: string; action: string };
-  npk: { analysis: string; action: string };
-}
+import { API_URL } from "../api";
+import type { Reading, Recommendations } from "../api";
 
 interface ReportModalProps {
   reading: Reading;
@@ -109,10 +94,7 @@ function ReportModal({ reading, recommendations, onClose }: ReportModalProps) {
         <button
           className="mt-6 w-full bg-green-600 text-white rounded-md py-2 text-sm font-medium hover:bg-green-700 transition-colors"
           onClick={() => {
-            window.open(
-              `http://localhost:3001/api/report/${reading.id}/pdf`,
-              "_blank",
-            );
+            window.open(`${API_URL}/api/report/${reading.id}/pdf`, "_blank");
           }}
         >
           Download PDF

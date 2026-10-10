@@ -1,64 +1,80 @@
-interface Reading {
-  id: number;
-  timestamp: string;
-  moisture: number;
-  ph: number;
-  nitrogen: number;
-  phosphorus: number;
-  potassium: number;
-  temperature: number;
-  conductivity: number;
-  source: string;
-}
+import type { Reading } from '../api';
 
 interface ReadingsListProps {
-  history: Reading[];
+  readings: Reading[]; // newest first (useHistory already orders them)
+  status: 'loading' | 'ok' | 'offline';
   onRowClick: (id: number) => void;
+  onRowHover: (id: number | null) => void;
+  canLoadMore: boolean;
+  onLoadMore: () => void;
 }
 
-function ReadingsList({ history, onRowClick }: ReadingsListProps) {
-  return (
-    <div>
-      <h2 className="text-lg font-semibold text-gray-800 mb-3">
-        Past Readings
-      </h2>
-      <p className="text-sm text-gray-400 mb-3">
-        Click a row to generate its report
-      </p>
+const COLUMNS = 'grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center gap-2 px-4';
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="max-h-70 overflow-y-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 text-gray-500 uppercase text-xs sticky top-0">
-              <tr>
-                <th className="px-4 py-2">Time</th>
-                <th className="px-4 py-2">Moisture</th>
-                <th className="px-4 py-2">pH</th>
-                <th className="px-4 py-2">N</th>
-                <th className="px-4 py-2">P</th>
-                <th className="px-4 py-2">K</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...history].reverse().map((r) => (
-                <tr
-                  key={r.id}
-                  onClick={() => onRowClick(r.id)}
-                  className="border-t border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+function ReadingsList({
+  readings,
+  status,
+  onRowClick,
+  onRowHover,
+  canLoadMore,
+  onLoadMore,
+}: ReadingsListProps) {
+  let message: string | null = null;
+  if (readings.length === 0) {
+    if (status === 'loading') message = 'Loading...';
+    else if (status === 'offline') message = 'Cannot get the data';
+    else message = 'No readings yet';
+  }
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-amber-200 bg-amber-50 shadow-md">
+      <div className={`${COLUMNS} h-12 border-b-2 border-amber-700 text-xs font-bold uppercase text-amber-900`}>
+        <span>Date &amp; Time</span>
+        <span>Moisture</span>
+        <span>pH</span>
+        <span>N</span>
+        <span>P</span>
+        <span>K</span>
+      </div>
+
+      {/* Always the height of 10 rows (10 x h-12 = 30rem), even with 0 or 1 readings */}
+      <div className="h-[30rem] overflow-y-auto" onMouseLeave={() => onRowHover(null)}>
+        {message ? (
+          <p className="p-6 text-center text-amber-900/70">{message}</p>
+        ) : (
+          <>
+            {readings.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => onRowClick(r.id)}
+                onMouseEnter={() => onRowHover(r.id)}
+                className={`${COLUMNS} h-12 w-full cursor-pointer border-b border-amber-700/40 text-left text-sm transition-colors hover:bg-amber-100`}
+              >
+                <span>
+                  {new Date(r.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'medium' })}
+                </span>
+                <span>{r.moisture.toFixed(1)}%</span>
+                <span>{r.ph.toFixed(2)}</span>
+                <span>{r.nitrogen}</span>
+                <span>{r.phosphorus}</span>
+                <span>{r.potassium}</span>
+              </button>
+            ))}
+
+            {canLoadMore && (
+              <div className="p-3 text-center">
+                <button
+                  type="button"
+                  onClick={onLoadMore}
+                  className="rounded-md bg-amber-700 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-800"
                 >
-                  <td className="px-4 py-2">
-                    {new Date(r.timestamp).toLocaleTimeString()}
-                  </td>
-                  <td className="px-4 py-2">{r.moisture}%</td>
-                  <td className="px-4 py-2">{r.ph}</td>
-                  <td className="px-4 py-2">{r.nitrogen}</td>
-                  <td className="px-4 py-2">{r.phosphorus}</td>
-                  <td className="px-4 py-2">{r.potassium}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  Load More
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
