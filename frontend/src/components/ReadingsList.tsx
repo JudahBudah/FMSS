@@ -1,7 +1,7 @@
 import type { Reading } from '../api';
 
 interface ReadingsListProps {
-  readings: Reading[]; // newest first (useHistory already orders them)
+  readings: Reading[]; // newest first
   status: 'loading' | 'ok' | 'offline';
   onRowClick: (id: number) => void;
   onRowHover: (id: number | null) => void;
@@ -37,7 +37,7 @@ function ReadingsList({
         <span>K</span>
       </div>
 
-      {/* Always the height of 10 rows (10 x h-12 = 30rem), even with 0 or 1 readings */}
+      {/* Always the height of 10 rows (10 x h-12 = 30rem) */}
       <div className="h-[30rem] overflow-y-auto" onMouseLeave={() => onRowHover(null)}>
         {message ? (
           <p className="p-6 text-center text-amber-900/70">{message}</p>

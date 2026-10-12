@@ -5,7 +5,7 @@ export type MascotState =
   | 'conditionalPositive'
   | 'negative';
 
-// SAMPLE TEXT from the designer, not final. The "?" modal reads from this same file.
+// SAMPLE TEXT, not final. "?" modal reads from this same file.
 export const MASCOT_MESSAGES: Record<MascotState, { label: string; message: string; meaning: string }> = {
   ready: {
     label: 'Ready',

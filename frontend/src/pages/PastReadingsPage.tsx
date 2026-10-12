@@ -3,7 +3,7 @@
 //   readings, status, loadMore  <- useHistory()
 //   report, openReport          <- useReport()
 // Change the markup and Tailwind classes freely.
-// Please don't edit the files in src/hooks. Ask Judah if the data needs to change.
+// Don't edit the files in src/hooks.
 import { useState } from 'react';
 import ReadingsList from '../components/ReadingsList';
 import ReportModal from '../components/ReportModal';
@@ -22,7 +22,7 @@ function PastReadingsPage() {
       <h1 className="mb-4 text-3xl font-bold">Past Readings</h1>
 
       <div className="mx-auto max-w-3xl">
-        {/* TODO (Tiu): swap this box for the mascot image from src/assets.
+        {/* TODO: swap this box for the mascot image from src/assets.
             It should only be visible while a row is hovered. */}
         <div
           className={`mb-2 inline-block rounded-lg bg-white px-3 py-2 text-sm shadow transition-opacity ${

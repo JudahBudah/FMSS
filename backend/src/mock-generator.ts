@@ -40,4 +40,4 @@ async function generateReading() {
 }
 
 generateReading();
-setInterval(generateReading, 5000);
+setInterval(generateReading, 3000);

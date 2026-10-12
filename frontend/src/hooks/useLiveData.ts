@@ -23,7 +23,7 @@ export function useLiveData(chartLimit = 10) {
           fetch(`${API_URL}/api/status`),
         ]);
 
-        // /api/latest answers 404 when the database has no readings yet. That's not an outage.
+        // /api/latest answers 404 when the database has no readings yet.
         const noReadings = latestRes.status === 404;
         if (!historyRes.ok || !statusRes.ok || (!latestRes.ok && !noReadings)) {
           throw new Error('Failed to fetch');

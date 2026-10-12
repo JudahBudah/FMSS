@@ -36,6 +36,7 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// just checks if tere is a reading in the database
 app.get("/api/latest", async (req, res) => {
   try {
     const latest = await prisma.reading.findFirst({
@@ -96,7 +97,6 @@ app.get("/api/report/:id", async (req, res) => {
       potassium: reading.potassium,
     });
 
-    // TODO: render this into a PDF with Puppeteer
     res.json({ reading, recommendations });
   } catch (error) {
     console.error(error);

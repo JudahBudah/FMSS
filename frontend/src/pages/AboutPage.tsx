@@ -1,6 +1,4 @@
 // ABOUT PAGE (Tiu)
-// Shown inside the layout, so the sidebar is already there. No data is needed.
-// The design isn't final, so this is only a starting structure. Edit freely.
 const MEASUREMENTS = [
   'Nitrogen (N)',
   'Phosphorus (P)',
@@ -34,7 +32,7 @@ function AboutPage() {
           </ul>
         </section>
 
-        {/* TODO (Tiu): add the rest from the final design (how it works, the team, ...) */}
+        {/* TODO: add the rest from the final design (how it works, the team, ...) */}
       </div>
     </div>
   );

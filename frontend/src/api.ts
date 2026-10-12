@@ -1,4 +1,3 @@
-// Defaults to the local backend. Set VITE_API_URL in frontend/.env to point somewhere else.
 export const API_URL: string = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
 export interface Reading {
@@ -14,7 +13,7 @@ export interface Reading {
   source: string;
 }
 
-// What the API actually sends: Prisma Decimal columns arrive as strings.
+// Prisma Decimal columns arrive as strings.
 interface RawReading {
   id: number;
   timestamp: string;
