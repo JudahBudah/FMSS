@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { API_URL, parseReading } from '../api';
-import type { ReportData } from '../api';
+import { useState } from "react";
+import { API_URL, parseReading } from "../api";
+import type { ReportData } from "../api";
 
 export function useReport() {
   const [report, setReport] = useState<ReportData | null>(null);
@@ -9,12 +9,12 @@ export function useReport() {
   async function openReport(id: number) {
     try {
       const res = await fetch(`${API_URL}/api/report/${id}`);
-      if (!res.ok) throw new Error('Failed to fetch');
+      if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
-      setReport({ reading: parseReading(data.reading), recommendations: data.recommendations });
+      setReport({ reading: parseReading(data.reading), items: data.items });
       setError(null);
     } catch {
-      setError('Could not load the report.');
+      setError("Could not load the report.");
     }
   }
 

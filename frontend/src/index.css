@@ -1,6 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 @import "tailwindcss";
+
+@font-face {
+  font-family: "MarseilleRegular";
+  src: url("./assets/fonts/marseilleRegular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 @theme {
   --color-sidebar: #17382d;
   --color-sidebar-active: #a56b2e;
+
+  --color-paper: #e4d2ac; 
+  --color-bark: #4a3410; 
 }

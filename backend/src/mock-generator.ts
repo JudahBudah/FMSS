@@ -1,8 +1,19 @@
 import prisma from './prisma';
+import { SCENARIO_NAMES, makeReading, type ScenarioName } from './mockScenarios';
 
-function randomInRange(min: number, max: number): number {
-  return parseFloat((Math.random() * (max - min) + min).toFixed(2));
+const INTERVAL_MS = 3000; // same cadence as the real sensor
+const READINGS_PER_SCENARIO = 30; // in cycle mode, how long each scenario lasts (about 1.5 minutes)
+
+// npm run mock              -> cycles through all the scenarios
+// npm run mock -- perfect   -> holds one scenario (perfect, conditional, or negative)
+const arg = process.argv[2];
+if (arg !== undefined && !SCENARIO_NAMES.includes(arg as ScenarioName)) {
+  console.error(`Unknown scenario "${arg}". Use one of: ${SCENARIO_NAMES.join(', ')} (or nothing, to cycle).`);
+  process.exit(1);
 }
+const fixed = arg as ScenarioName | undefined;
+
+let count = 0;
 
 async function isPaused(): Promise<boolean> {
   try {
@@ -11,33 +22,25 @@ async function isPaused(): Promise<boolean> {
     return data.paused;
   } catch (err) {
     console.error('Could not reach server to check status:', err);
-    return true; // if can't reach the server — treat as paused
+    return true; // if we can't confirm, don't write blindly
   }
 }
 
 async function generateReading() {
-  const paused = await isPaused();
-
-  if (paused) {
-    console.log('Paused — skipping this cycle');
+  if (await isPaused()) {
+    console.log('Paused, skipping this cycle');
     return;
   }
 
+  const scenario = fixed ?? SCENARIO_NAMES[Math.floor(count / READINGS_PER_SCENARIO) % SCENARIO_NAMES.length];
+  count++;
+
   const reading = await prisma.reading.create({
-    data: {
-      moisture: randomInRange(10, 40),
-      ph: randomInRange(4.5, 8.0),
-      nitrogen: Math.floor(randomInRange(0, 50)),
-      phosphorus: Math.floor(randomInRange(0, 50)),
-      potassium: Math.floor(randomInRange(0, 50)),
-      temperature: randomInRange(18, 32),
-      conductivity: randomInRange(50, 500),
-      source: 'MOCK',
-    },
+    data: { ...makeReading(scenario), source: 'MOCK' },
   });
 
-  console.log('Inserted mock reading:', reading);
+  console.log(`[${scenario}] inserted mock reading #${reading.id}`);
 }
 
 generateReading();
-setInterval(generateReading, 3000);
+setInterval(generateReading, INTERVAL_MS);

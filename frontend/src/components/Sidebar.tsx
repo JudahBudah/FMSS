@@ -5,9 +5,10 @@ import {
   HistoryIcon,
   InfoCircleIcon,
   Logout2Icon,
+  LeafIcon,
 } from "@solar-icons/react/bold";
 import fmssLogo from "../assets/icons/fmss.svg";
-import dahon from "../assets/icons/dahon.svg";
+import mainPoseMascot from "../assets/mascot/mainPoseMascot.svg";
 
 const links = [
   { to: "/dashboard", label: "Dashboard", icon: Widget5Icon },
@@ -72,14 +73,25 @@ function Sidebar({ open, onClose }: SidebarProps) {
         </nav>
 
         {/* Dahon */}
-        <img src={dahon} className="absolute bottom-0 left-0 pointer-events-none w-47 h-auto" />
+        <div className="flex flex-col gap-3 items-center mt-auto mb-20">
+          <img src={mainPoseMascot} alt="Mascot" className="h-auto w-22" />
+
+          <p
+            className="text-white text-center text-lg px-4"
+            style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+          >
+            HEALTHY SOIL, BETTER HARVESTS, A GREENER FUTURE.
+          </p>
+
+          <LeafIcon size={34} className="text-[#3e9679]"/>
+        </div>
 
         {/* Exit goes back to Welcome page */}
         <Link
           to="/"
           onClick={onClose}
           aria-label="Back to welcome page"
-          className="mt-auto ml-auto p-5 text-white/80 hover:text-white z-45"
+          className="absolute bottom-5.5 right-5.5 text-white/80 hover:text-white z-45"
         >
           <Logout2Icon size={24} />
         </Link>

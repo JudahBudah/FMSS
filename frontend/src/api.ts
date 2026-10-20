@@ -1,4 +1,7 @@
-export const API_URL: string = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+import type { StatKey } from "./statCards";
+
+export const API_URL: string =
+  import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
 export interface Reading {
   id: number;
@@ -37,13 +40,68 @@ export function parseReading(raw: RawReading): Reading {
   };
 }
 
-export interface Recommendations {
-  moisture: { status: string; action: string };
-  ph: { evaluation: string; action: string };
-  npk: { analysis: string; action: string };
+export type Condition = "good" | "moderate" | "bad";
+
+// One row of the report: a measured value, how it rates, and the short advice for it
+export interface ReportItem {
+  key: string;
+  label: string;
+  unit: string;
+  value: number;
+  condition: Condition;
+  status: string; // "Optimal", "Low", ...
+  advice: string[];
 }
 
 export interface ReportData {
   reading: Reading;
-  recommendations: Recommendations;
+  items: ReportItem[];
+}
+
+export type Verdict = "perfectPositive" | "conditionalPositive" | "negative";
+
+export interface ConditionResult {
+  condition: Condition;
+  direction: "low" | "high" | null;
+  label: string; // "Optimal", "Slightly acidic", ...
+}
+
+// What /api/conditions sends: the average of the latest readings, how each value rates, and the verdict
+export interface ConditionsData {
+  count: number;
+  averages: Record<StatKey, number> | null;
+  conditions: Record<StatKey, ConditionResult> | null;
+  verdict: Verdict | null;
+}
+
+export interface StandardBand {
+  condition: Condition;
+  direction: "low" | "high" | null;
+  label: string; // "Optimal", "Slightly acidic", ...
+  range: string; // "above 5.0 and below 6.0"
+}
+
+export interface StandardAdvice {
+  for: "low" | "high" | "any"; // which side of the good range it applies to
+  summary: string;
+}
+
+export interface StandardMetric {
+  key: StatKey;
+  label: string;
+  unit: string;
+  bands: StandardBand[];
+  advice: { moderate: StandardAdvice[]; bad: StandardAdvice[] };
+}
+
+export interface StandardSource {
+  name: string;
+  url?: string;
+}
+
+// What /api/standards sends: the ranges and short advice for every value, plus the sources
+export interface StandardsData {
+  metrics: StandardMetric[];
+  sources: StandardSource[];
+  sourceNote: string;
 }

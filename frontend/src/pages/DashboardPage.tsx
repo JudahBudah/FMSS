@@ -1,18 +1,15 @@
 import { useState } from "react";
-import { Sprout } from "lucide-react";
 import { PlayIcon, PauseIcon } from "@solar-icons/react/bold";
 import HistoryChart from "../components/HistoryChart";
-import MascotInfoModal from "../components/MascotInfoModal";
+import StandardsModal from "../components/StandardsModal";
 import StatCard from "../components/StatCard";
 import { useLiveData } from "../hooks/useLiveData";
-import { MASCOT_MESSAGES } from "../mascotMessages";
-import { STAT_CARDS } from "../statCards.ts";
+import { STAT_CARDS, type StatKey } from "../statCards.ts";
+import SeriesPicker from "../components/SeriesPicker";
+import dashboardTitle from "../assets/titles/dashboardTitle.svg";
+import { MASCOT_IMAGES, mascotMessage, pickMascotState } from "../mascot";
 
-const TABS = [
-  { label: "10 Readings", enabled: true },
-  { label: "Last 24 Hours", enabled: false }, // not wired up yet
-  { label: "Last 7 Days", enabled: false }, // not wired up yet
-];
+const DEFAULT_SERIES: StatKey[] = ["nitrogen", "phosphorus", "potassium"];
 
 // Up to 2 decimals, or "--" while there is no reading yet
 // just checks if there is value/reading
@@ -21,8 +18,25 @@ function fmt(value: number | undefined): string {
 }
 
 function DashboardPage() {
-  const { reading, history, paused, status, togglePause } = useLiveData();
+  const {
+    reading,
+    history,
+    conditions,
+    paused,
+    awaitingFresh,
+    status,
+    togglePause,
+  } = useLiveData();
   const [infoOpen, setInfoOpen] = useState(false);
+  const [selected, setSelected] = useState<StatKey[]>(DEFAULT_SERIES);
+
+  function toggleSeries(key: StatKey) {
+    setSelected((current) =>
+      current.includes(key)
+        ? current.filter((k) => k !== key)
+        : [...current, key],
+    );
+  }
 
   const badge =
     status === "offline"
@@ -31,64 +45,20 @@ function DashboardPage() {
         ? { text: "Paused", dot: "bg-amber-400" }
         : { text: "Online", dot: "bg-green-500" };
 
-  const mascotState = paused ? "onHold" : "ready";
+  const mascotState = pickMascotState(
+    conditions?.verdict ?? null,
+    awaitingFresh,
+  );
+  const mascotText = mascotMessage(mascotState, conditions);
 
   return (
     <div className="flex-1 p-4 sm:p-6">
       {/* Upper */}
       <div className="mb-4 flex flex-col gap-4">
-        <h1 className="bg-amber-100 px-4 py-1 text-xl font-black uppercase tracking-wide text-emerald-950 sm:text-3xl w-fit">
-          FMSS Fertilizer Dashboard
-        </h1>
-
-        {/* Online, Pause, Tabs */}
-        <div className="flex items-center flex-wrap gap-50">
-          {/* Online, Pause */}
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-2 rounded bg-emerald-100/80 px-3.5 py-1.5 text-sm font-semibold text-white">
-              <span className={`h-2.5 w-2.5 rounded-full ${badge.dot}`} />
-
-              {badge.text}
-            </span>
-
-            <button
-              onClick={togglePause}
-              disabled={status === "offline"}
-              className={`rounded px-3.5 py-1.5 text-sm font-semibold text-white z
-              disabled:cursor-not-allowed disabled:opacity-50 ${paused ? "bg-emerald-800 hover:bg-emerald-900 cursor-pointer" : "bg-red-600/90 hover:bg-red-700/90 cursor-pointer"}`}
-            >
-              {paused ? (
-                <div className="flex items-center gap-2">
-                  <PlayIcon size={16} />
-                  Resume
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <PauseIcon size={16} />
-                  Pause
-                </div>
-              )}
-            </button>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex gap-2 whitespace-nowrap text-white">
-            {TABS.map((tab) => (
-              <button
-                key={tab.label}
-                disabled={!tab.enabled}
-                title={tab.enabled ? undefined : "Coming soon"}
-                className={`rounded px-3.5 py-1.5 text-sm font-semibold text-white ${
-                  tab.enabled
-                    ? "bg-emerald-800 hover:bg-emerald-900 cursor-pointer"
-                    : "cursor-not-allowed bg-emerald-800/50 hover:bg-emerald-900/50"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <img
+          src={dashboardTitle}
+          className="h-7 w-fit sm:h-9.5 lg:h-10.5 drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]"
+        />
       </div>
 
       {/* Offline / No backend error */}
@@ -109,29 +79,77 @@ function DashboardPage() {
         </p>
       )}
 
-      {/* Chart */}
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <section className="rounded-lg bg-emerald-950 p-4 text-white shadow-md">
-          <div className="relative h-64">
-            <HistoryChart history={history} />
+      {/* Chart, Mascot*/}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-3">
+        {/* Chart & Online, Pause, Tabs */}
+        <section className="col-span-1 md:col-span-3 lg:col-span-2">
+          {/* Online, Pause, Tabs */}
+          <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">
+            {/* Online, Pause */}
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-2 rounded bg-white/40 px-3.5 py-1.5 text-sm font-semibold text-white">
+                <span className={`h-2.5 w-2.5 rounded-full ${badge.dot}`} />
+
+                {badge.text}
+              </span>
+
+              <button
+                onClick={togglePause}
+                disabled={status === "offline"}
+                className={`rounded px-3.5 py-1.5 text-sm font-semibold text-white z
+              disabled:cursor-not-allowed disabled:opacity-50 ${paused ? "bg-emerald-800 hover:bg-emerald-900 cursor-pointer" : "bg-red-600/90 hover:bg-red-700/90 cursor-pointer"}`}
+              >
+                {paused ? (
+                  <div className="flex items-center gap-2">
+                    <PlayIcon size={16} />
+                    Resume
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <PauseIcon size={16} />
+                    Pause
+                  </div>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Chart */}
+          <div className="rounded-lg bg-emerald-950 p-4 text-white shadow-md">
+            <div className="flex gap-2 relative">
+              <div className="relative h-64 min-w-0 flex-1 mt-4">
+                <HistoryChart history={history} selected={selected} />
+              </div>
+              <SeriesPicker selected={selected} onToggle={toggleSeries} />
+            </div>
           </div>
         </section>
 
-        <section className="flex flex-col items-center justify-center gap-3 rounded-lg bg-white/60 p-4">
-          <p className="max-w-xs rounded-2xl bg-white px-4 py-3 text-center text-sm font-semibold shadow-md">
-            {MASCOT_MESSAGES[mascotState].message}
-          </p>
-          {/* TODO: replace with the mascot image from src/assets */}
-          <div className="flex h-32 w-32 items-center justify-center rounded-full bg-amber-100 text-emerald-800">
-            <Sprout size={56} />
-          </div>
-          <button
-            onClick={() => setInfoOpen(true)}
-            aria-label="What the mascot's messages mean"
-            className="h-8 w-8 rounded-full bg-white text-sm font-bold shadow-md hover:bg-amber-100"
+        {/* Mascot */}
+        <section className="flex flex-col items-center justify-center gap-1 rounded-lg p-4">
+          <p
+            role="status"
+            className="max-w-xs rounded-2xl bg-white px-4 py-3 text-center text-sm font-semibold shadow-md"
           >
-            ?
-          </button>
+            {mascotText}
+          </p>
+
+          {/* Mascot, circle, and info button */}
+          <div className="relative mt-2 h-56 w-56">
+            <div className="absolute inset-0 rounded-full bg-amber-100" />
+            <img
+              src={MASCOT_IMAGES[mascotState]}
+              alt=""
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-45 w-auto max-w-none object-contain"
+            />
+            <button
+              onClick={() => setInfoOpen(true)}
+              aria-label="What the mascot's messages mean"
+              className="absolute bottom-0 right-0 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white text-md font-bold shadow-md hover:bg-amber-100"
+            >
+              ?
+            </button>
+          </div>
         </section>
       </div>
 
@@ -152,7 +170,12 @@ function DashboardPage() {
         ))}
       </div>
 
-      {infoOpen && <MascotInfoModal onClose={() => setInfoOpen(false)} />}
+      {infoOpen && (
+        <StandardsModal
+          conditions={conditions}
+          onClose={() => setInfoOpen(false)}
+        />
+      )}
     </div>
   );
 }
