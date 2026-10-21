@@ -1,15 +1,16 @@
-import type { Reading } from '../api';
+import type { Reading } from "../api";
 
 interface ReadingsListProps {
   readings: Reading[]; // newest first
-  status: 'loading' | 'ok' | 'offline';
+  status: "loading" | "ok" | "offline";
   onRowClick: (id: number) => void;
   onRowHover: (id: number | null) => void;
   canLoadMore: boolean;
   onLoadMore: () => void;
 }
 
-const COLUMNS = 'grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center gap-2 px-4';
+const COLUMNS =
+  "grid grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center gap-2 px-4";
 
 function ReadingsList({
   readings,
@@ -21,14 +22,16 @@ function ReadingsList({
 }: ReadingsListProps) {
   let message: string | null = null;
   if (readings.length === 0) {
-    if (status === 'loading') message = 'Loading...';
-    else if (status === 'offline') message = 'Cannot get the data';
-    else message = 'No readings yet';
+    if (status === "loading") message = "Loading...";
+    else if (status === "offline") message = "Cannot get the data";
+    else message = "No readings yet";
   }
 
   return (
     <div className="overflow-hidden rounded-lg border border-amber-200 bg-amber-50 shadow-md">
-      <div className={`${COLUMNS} h-12 border-b-2 border-amber-700 text-xs font-bold uppercase text-amber-900`}>
+      <div
+        className={`${COLUMNS} h-12 border-b-2 border-amber-700 text-xs font-bold uppercase text-amber-900`}
+      >
         <span>Date &amp; Time</span>
         <span>Moisture</span>
         <span>pH</span>
@@ -38,7 +41,10 @@ function ReadingsList({
       </div>
 
       {/* Always the height of 10 rows (10 x h-12 = 30rem) */}
-      <div className="h-[30rem] overflow-y-auto" onMouseLeave={() => onRowHover(null)}>
+      <div
+        className="h-120 overflow-y-auto overlay-scrollbar"
+        onMouseLeave={() => onRowHover(null)}
+      >
         {message ? (
           <p className="p-6 text-center text-amber-900/70">{message}</p>
         ) : (
@@ -52,7 +58,10 @@ function ReadingsList({
                 className={`${COLUMNS} h-12 w-full cursor-pointer border-b border-amber-700/40 text-left text-sm transition-colors hover:bg-amber-100`}
               >
                 <span>
-                  {new Date(r.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'medium' })}
+                  {new Date(r.timestamp).toLocaleString([], {
+                    dateStyle: "medium",
+                    timeStyle: "medium",
+                  })}
                 </span>
                 <span>{r.moisture.toFixed(1)}%</span>
                 <span>{r.ph.toFixed(2)}</span>
@@ -67,7 +76,7 @@ function ReadingsList({
                 <button
                   type="button"
                   onClick={onLoadMore}
-                  className="rounded-md bg-amber-700 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-800"
+                  className="rounded-md border border-amber-400 bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-950 transition-colors duration-200 hover:bg-amber-200"
                 >
                   Load More
                 </button>

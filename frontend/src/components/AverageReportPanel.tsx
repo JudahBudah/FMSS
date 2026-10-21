@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../api";
-import { rangeProblem, type Boundary, type RangePicker } from "../hooks/useRangePicker";
+import {
+  rangeProblem,
+  type Boundary,
+  type RangePicker,
+} from "../hooks/useRangePicker";
+import {
+  HistoryIcon,
+  CalendarIcon,
+  DownloadMinimalisticIcon,
+} from "@solar-icons/react/bold";
 
 const FILE_NAME = "FMSS Average Soil Report.pdf";
 
@@ -13,7 +22,9 @@ async function downloadPdf(query: string) {
   } catch (err) {
     // fetch only fails like this when the server is down or the browser blocked the request (CORS)
     console.error("Average report request failed:", err);
-    throw new Error("Could not reach the server. If the backend is running, check the browser console (F12).");
+    throw new Error(
+      "Could not reach the server. If the backend is running, check the browser console (F12).",
+    );
   }
 
   if (!res.ok) {
@@ -37,46 +48,47 @@ type Busy = "latest" | "range" | null;
 function BoundaryField({
   label,
   value,
-  onChange,
   active,
   onPick,
 }: {
   label: string;
   value: string;
-  onChange: (value: string) => void;
   active: boolean;
   onPick: () => void;
 }) {
+  const formattedValue = value
+    ? new Date(value).toLocaleString()
+    : "Click to select a reading";
+
   return (
-    <div className="flex flex-col text-sm font-semibold">
-      <div className="mb-1 flex items-center gap-2">
-        <span>{label}</span>
-        <button
-          type="button"
-          aria-pressed={active}
-          aria-label={`Pick the ${label.toLowerCase()} time from the table`}
-          onClick={onPick}
-          className={`cursor-pointer rounded px-2 py-0.5 text-xs font-semibold ${
-            active ? "bg-amber-400 text-emerald-950" : "bg-emerald-800 text-white hover:bg-emerald-900"
-          }`}
-        >
-          {active ? "Click a reading..." : "Pick from table"}
-        </button>
-      </div>
-      <input
-        type="datetime-local"
-        step={1}
-        aria-label={label}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="rounded border border-emerald-950/20 bg-white px-2 py-1.5 text-sm font-normal"
-      />
+    <div className="flex flex-col text-sm">
+      <span className="mb-1 font-semibold text-[#3B2A18]">{label}</span>
+
+      <button
+        type="button"
+        aria-pressed={active}
+        aria-label={`Select ${label.toLowerCase()} reading from the table`}
+        onClick={onPick}
+        className={`min-w-55 cursor-pointer rounded-md border px-3 py-2 text-[#3B2A18] text-left text-sm transition-colors ${
+          active
+            ? "border-amber-400 bg-amber-100 ring-1 ring-amber-300/50"
+            : "border-[#D8C49B] bg-[#FFF9EA] hover:border-amber-300 hover:bg-amber-50"
+        }`}
+      >
+        {active ? (
+          <span className="font-semibold">Click a reading...</span>
+        ) : value ? (
+          formattedValue
+        ) : (
+          <span>Click to select a reading</span>
+        )}
+      </button>
     </div>
   );
 }
 
 function AverageReportPanel({ range }: { range: RangePicker }) {
-  const { from, to, setFrom, setTo, picking, setPicking, message, setMessage } = range;
+  const { from, to, picking, setPicking, message, setMessage } = range;
   const [busy, setBusy] = useState<Busy>(null);
 
   // Escape stops picking
@@ -97,7 +109,9 @@ function AverageReportPanel({ range }: { range: RangePicker }) {
       await downloadPdf(query);
     } catch (err) {
       console.error(err);
-      setMessage(err instanceof Error ? err.message : "Could not create the report.");
+      setMessage(
+        err instanceof Error ? err.message : "Could not create the report.",
+      );
     } finally {
       setBusy(null);
     }
@@ -126,58 +140,78 @@ function AverageReportPanel({ range }: { range: RangePicker }) {
   const disabled = busy !== null;
 
   return (
-    <section className="rounded-lg bg-amber-50 border-amber-200 mt-4 p-4 text-emerald-950 shadow-md">
+    <section className="mt-4 rounded-2xl bg-amber-50 p-4 sm:p-5 text-amber-950 shadow-sm">
+      <h2 className="text-lg font-bold text-amber-950">Export Readings</h2>
+      <p className="mt-1 mb-4 text-sm text-amber-900/80">
+        Download an average reading report as PDF.
+      </p>
 
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:gap-6">
-        <div>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+
+        {/* Recent readings */}
+        <div className="flex flex-col rounded-xl border border-amber-200 bg-[#fff5dc] p-3">
+          <div className="flex items-center gap-2">
+            <HistoryIcon size={20} />
+            <h3 className="font-semibold text-amber-950">Recent readings</h3>
+          </div>
+          <p className="mt-1 mb-4 text-sm text-amber-900/80">
+            Download your latest 10 readings.
+          </p>
+
           <button
             type="button"
             disabled={disabled}
             onClick={() => run("latest", "latest=10")}
-            className="cursor-pointer rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex justify-center items-center mt-auto cursor-pointer rounded-md bg-emerald-800 px-4 py-2.5 gap-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {busy === "latest" ? "Preparing..." : "Last 10 readings"}
+            <DownloadMinimalisticIcon size={20} />
+            {busy === "latest" ? "Preparing..." : "Download last 10"}
           </button>
         </div>
 
-        <div className="flex flex-wrap items-end gap-3">
-          <BoundaryField
-            label="From"
-            value={from}
-            onChange={setFrom}
-            active={picking === "from"}
-            onPick={() => togglePick("from")}
-          />
-          <BoundaryField
-            label="To"
-            value={to}
-            onChange={setTo}
-            active={picking === "to"}
-            onPick={() => togglePick("to")}
-          />
+        {/* Custom date range */}
+        <div className="flex flex-col rounded-xl border border-amber-200 bg-[#fff5dc] p-3">
+          <div className="flex items-center gap-2">
+            <CalendarIcon size={20} />
+            <h3 className="font-semibold text-amber-950">Custom date range</h3>
+          </div>
+          <p className="mt-1 mb-3 text-sm text-amber-900/80">
+            Choose the period you want to export.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            <BoundaryField
+              label="From"
+              value={from}
+              active={picking === "from"}
+              onPick={() => togglePick("from")}
+            />
+
+            <BoundaryField
+              label="To"
+              value={to}
+              active={picking === "to"}
+              onPick={() => togglePick("to")}
+            />
+          </div>
+
           <button
             type="button"
             disabled={disabled}
             onClick={downloadRange}
-            className="cursor-pointer rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex justify-center items-center mt-4 cursor-pointer rounded-md bg-emerald-800 px-4 py-2.5 gap-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {busy === "range" ? "Preparing..." : "Download"}
+            <DownloadMinimalisticIcon size={20} />
+            {busy === "range" ? "Preparing..." : "Download range"}
           </button>
         </div>
       </div>
 
-      {picking && (
-        <p role="status" className="mt-3 rounded bg-amber-100 px-3 py-2 text-sm">
-          Click a reading in the table to use its time as the {picking === "from" ? "start" : "end"}.{" "}
-          <button type="button" onClick={() => setPicking(null)} className="cursor-pointer font-semibold underline">
-            Cancel
-          </button>{" "}
-          (or press Esc)
-        </p>
-      )}
-
       {message && (
-        <p role="alert" className="mt-3 rounded bg-red-100 px-3 py-2 text-sm text-red-800">
+        <p
+          role="alert"
+          className="mt-3 rounded-md border border-red-200 bg-red-100 px-3 py-2 text-sm text-red-800"
+        >
           {message}
         </p>
       )}

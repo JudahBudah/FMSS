@@ -16,3 +16,25 @@
   --color-paper: #e4d2ac; 
   --color-bark: #4a3410; 
 }
+
+.overlay-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #b8a078 transparent;
+}
+
+.overlay-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overlay-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overlay-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #b8a078;
+  border-radius: 999px;
+}
+
+.overlay-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #927348;
+}

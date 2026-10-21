@@ -27,7 +27,7 @@ function ReportModal({ reading, items, onClose }: ReportModalProps) {
       onClick={onClose}
     >
       <div
-        className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-lg bg-[#F5E8C8] p-6 shadow-lg"
+        className="max-h-[85vh] w-full max-w-lg overflow-y-auto overlay-scrollbar rounded-lg bg-[#f9f0da] p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between">

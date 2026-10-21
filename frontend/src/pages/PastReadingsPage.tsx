@@ -51,9 +51,10 @@ function PastReadingsPage() {
         </div>
 
         <div
-          className={range.picking ? "rounded-sm ring-4 ring-amber-400" : ""}
+          className={`rounded-lg transition-all duration-200 ${
+            range.picking ? "ring-4 ring-amber-300/70" : ""
+          }`}
         >
-          {/* Table */}
           <ReadingsList
             readings={readings}
             status={status}

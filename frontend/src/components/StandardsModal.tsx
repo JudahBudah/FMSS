@@ -71,7 +71,7 @@ function StandardsModal({ conditions, onClose }: StandardsModalProps) {
         role="dialog"
         aria-modal="true"
         aria-label="How your soil is rated"
-        className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-[#F5E8C8] p-5 shadow-lg sm:p-6"
+        className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-[#f9f0da] p-5 shadow-lg overlay-scrollbar sm:p-6"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Upper */}
@@ -116,7 +116,7 @@ function StandardsModal({ conditions, onClose }: StandardsModalProps) {
                     className={`flex shrink-0 cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold ${
                       selected
                         ? "bg-emerald-800 text-[#FFF9EA]"
-                        : "bg-[#FFF9EA] text-gray-700 hover:bg-[#FFF9EA]/80"
+                        : "bg-white text-gray-700 hover:bg-white/80"
                     }`}
                   >
                     {rating && (
@@ -160,7 +160,7 @@ function StandardsModal({ conditions, onClose }: StandardsModalProps) {
                   {metric.bands.map((band) => (
                     <tr
                       key={band.label}
-                      className={`border-b text-[#533a23] border-[#e3daca] ${band.label === now?.label ? "bg-[#FFF9EA] font-semibold" : ""}`}
+                      className={`border-b text-[#533a23] border-[#e3daca] ${band.label === now?.label ? "bg-[#ffe7a9] font-semibold" : ""}`}
                     >
                       <td className="py-2 pl-4">{band.label}</td>
                       <td className="py-2">
