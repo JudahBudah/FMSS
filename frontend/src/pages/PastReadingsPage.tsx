@@ -34,24 +34,24 @@ function PastReadingsPage() {
 
       {/* Mascot, Table */}
       <div className="relative mx-auto max-w-3xl mt-36">
+
         {/* Chat & Mascot */}
-        <div className="absolute -top-38 -right-21 flex w-fit h-40 items-end">
+        <div className="absolute -top-18 -right-17 flex w-fit h-40 items-end z-0">
           <div
-            className={`absolute bottom-5 -left-45 whitespace-nowrap h-fit px-3 py-2 rounded-lg bg-white text-sm shadow transition-opacity 
-              
-            
-            `}
+            className={`absolute -top-13 right-0 whitespace-nowrap h-fit px-3 py-2 rounded-lg bg-white text-sm shadow transition-opacity `}
           >
             {MASCOT_MESSAGE}
           </div>
+
           <img
             src={pastReadingMascot}
-            className={`w-auto h-40 transition-opacity`}
+            className={`w-auto h-52 transition-opacity`}
           />
         </div>
 
+        {/* Table */}
         <div
-          className={`rounded-lg transition-all duration-200 ${
+          className={`relative z-10 rounded-lg transition-all duration-200 ${
             range.picking ? "ring-4 ring-amber-300/70" : ""
           }`}
         >
