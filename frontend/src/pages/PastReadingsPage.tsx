@@ -6,15 +6,12 @@ import { useReport } from "../hooks/useReport";
 import AverageReportPanel from "../components/AverageReportPanel";
 import { useRangePicker } from "../hooks/useRangePicker";
 import pastReadingTitle from "../assets/titles/pastReadingTitle.svg";
-import pastReadingMascot from "../assets/mascot/pastReadingMascot.svg";
-
-const MASCOT_MESSAGE = "Click a row to generate a report!";
+import mascotChatHead from "../assets/mascot/mascotChatHead.svg";
 
 function PastReadingsPage() {
   const { readings, status, canLoadMore, loadMore } = useHistory();
   const { report, error, openReport, closeReport } = useReport();
   const [hoveredId, setHoveredId] = useState<number | null>(null);
-  //  ${hoveredId !== null ? "opacity-100" : "opacity-0"}
 
   const range = useRangePicker();
 
@@ -34,20 +31,15 @@ function PastReadingsPage() {
 
       {/* Mascot, Table */}
       <div className="relative mx-auto max-w-3xl mt-36">
-
         {/* Chat & Mascot */}
-        <div className="absolute -top-18 -right-17 flex w-fit h-40 items-end z-0">
-          <div
-            className={`absolute -top-13 right-0 whitespace-nowrap h-fit px-3 py-2 rounded-lg bg-white text-sm shadow transition-opacity `}
-          >
-            {MASCOT_MESSAGE}
-          </div>
-
-          <img
-            src={pastReadingMascot}
-            className={`w-auto h-52 transition-opacity`}
-          />
-        </div>
+        <img
+          src={mascotChatHead}
+          className={`pointer-events-none absolute left-1/2 -top-38 h-52 w-fit z-0 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] lg:left-auto lg:-top-54 lg:-right-5 lg:h-76 xl:-top-49 xl:-right-28 xl:h-76 ${
+            hoveredId !== null
+              ? "-translate-x-1/2 translate-y-0 lg:translate-x-0"
+              : "-translate-x-1/2 translate-y-full lg:-translate-x-3/5 lg:translate-y-4/5"
+          }`}
+        />
 
         {/* Table */}
         <div

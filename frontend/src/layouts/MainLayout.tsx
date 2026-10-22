@@ -30,27 +30,33 @@ function MainLayout() {
         </button>
       </header>
 
-      {/* Background stays fixed; only the page inside slides. */}
-      <main
-        className="relative flex flex-1 flex-col overflow-hidden bg-cover bg-fixed bg-center"
-        style={{
-          backgroundImage: `linear-gradient(rgb(${TINT} / ${TINT_ALPHA}), rgb(${TINT} / ${TINT_ALPHA})), url(${mainBg})`,
-        }}
-      >
-        <AnimatePresence mode="popLayout" custom={direction} initial={false}>
-          <motion.div
-            key={location.pathname}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="flex flex-1 flex-col"
-          >
-            {outlet}
-          </motion.div>
-        </AnimatePresence>
+      <main className="relative flex flex-1 flex-col overflow-hidden">
+        {/* Background layer, separate from the sliding content.
+            Replaces bg-fixed, which breaks inside transformed parents. */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `linear-gradient(rgb(${TINT} / ${TINT_ALPHA}), rgb(${TINT} / ${TINT_ALPHA})), url(${mainBg})`,
+          }}
+        />
+
+        <div className="relative z-10 flex flex-1 flex-col">
+          <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+            <motion.div
+              key={location.pathname}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="flex flex-1 flex-col"
+            >
+              {outlet}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </main>
     </div>
   );

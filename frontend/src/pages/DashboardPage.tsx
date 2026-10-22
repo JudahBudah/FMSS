@@ -80,7 +80,7 @@ function DashboardPage() {
       )}
 
       {/* Chart, Mascot*/}
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-5 md:gap-10 lg:gap-3 lg:grid-cols-3">
         {/* Chart & Online, Pause, Tabs */}
         <section className="col-span-1 md:col-span-3 lg:col-span-2">
           {/* Online, Pause, Tabs */}
@@ -126,7 +126,7 @@ function DashboardPage() {
         </section>
 
         {/* Mascot */}
-        <section className="flex flex-col items-center justify-center gap-1 rounded-lg p-4">
+        <section className="flex flex-col items-center justify-center gap-1 rounded-lg p-4 md:col-span-2 lg:col-span-1">
           <p
             role="status"
             className="max-w-xs rounded-2xl bg-white px-4 py-3 text-center text-sm font-semibold shadow-md"
